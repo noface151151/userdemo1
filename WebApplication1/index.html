@@ -1,0 +1,230 @@
+﻿<!DOCTYPE html>
+<html ng-app="userapp">
+<head>
+    <title>User Demo</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="content/jquery.datetimepicker.css" rel="stylesheet" />
+    <link href="content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <link href="content/style.css" rel="stylesheet" />
+</head>
+<body ng-controller="UserController">
+    <h2 class="text-center text-info">User Demo</h2>
+
+    <div class="container" ng-show="flag">
+        <h1 class="well">Registration Form</h1>
+        <div class="col-lg-12 well">
+            <div class="row">
+                <form name="registerform">
+                    <div class="col-sm-12">
+
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" placeholder="Enter Full Name Here.." class="form-control" ng-model="fullname">
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 form-group">
+                                <label>User Name</label>
+                                <input type="text" placeholder="Enter User Name Here.." class="form-control" ng-model="username" name="username" required>
+                                <p ng-show="registerform.username.$error.required" class="text-danger">Username is required</p>
+                            </div>
+                            <div class="col-sm-4 form-group">
+                                <label>Password</label>
+                                <input type="password" placeholder="Enter Password Here.." class="form-control" name="password" ng-model="password" ng-minlength="6" ng-maxlength="32" required>
+                                <p class="text-danger" ng-show="registerform.password.$error.required">Password is required</p>
+                                <p class="text-danger" ng-show="registerform.password.$dirty&&registerform.password.$error.minlength">Password must have at least 6 characters</p>
+                                <p class="text-danger" ng-show="registerform.password.$dirty&&registerform.password.$error.maxlength">Password must have max 32 characters</p>
+                            </div>
+                            <div class="col-sm-4 form-group">
+                                <label>Confirm Password</label>
+                                <input type="password" placeholder="Enter Confirm Password Here.." class="form-control" name="confirmpassword" ng-model="confirmpassword" data-password-verify="password" required>
+                                <p class="text-danger" ng-show="registerform.confirmpassword.$error.required">Password confirm is required</p>
+                                <p class="text-danger" ng-show="registerform.confirmpassword.$error.passwordVerify">Password not match</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 form-group">
+                                <label>Sex</label>
+                                <input type="text" placeholder="Enter Your Sex Here.." class="form-control" ng-model="sex">
+                            </div>
+                            <div class="col-sm-4 form-group">
+                                <label>Birthday</label>
+                                <input type="text" placeholder="Enter Birthday Here.." class="form-control" id="datetimepicker4" ng-model="birthday">
+                            </div>
+                            <div class="col-sm-4 form-group">
+                                <label>Job</label>
+                                <select class="form-control" ng-model="job">
+                                    <option value="Developer">Developer</option>
+                                    <option value="Tester">Tester</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-if="!phonearr">
+                            <div class="col-sm-8 form-group">
+                                <label>Phone Number</label>
+                                <input type="text" placeholder="Enter Phone Number Here.." class="form-control" ng-model="phone">
+                            </div>
+                            <div class="form-group col-sm-2">
+                                <label>Add phone</label>
+                                <button type="button" class="btn btn-default btn-sm form-control" ng-click="Addphone()">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </button>
+                            </div>
+                            <div class="form-group col-sm-2">
+                                <label>Remove</label>
+                                <button type="button" class="btn btn-default btn-sm form-control" ng-click="Removephone()">
+                                    <span class="glyphicon glyphicon-minus"></span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="row" ng-if="phonearr" ng-repeat="i in phonearr track by $index">
+                            <div class="col-sm-8 form-group">
+                                <label>Phone Number</label>
+                                <input type="text" placeholder="Enter Phone Number Here.." class="form-control" ng-model="i.phone">
+                            </div>
+                            <div class="form-group col-sm-2" ng-if="$index==0">
+                                <label>Add phone</label>
+                                <button type="button" class="btn btn-default btn-sm form-control" ng-click="Addphone()">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </button>
+                            </div>
+                    
+                            <div class="form-group col-sm-2" ng-if="$index!=0">
+                                <label>Remove</label>
+                                <button type="button" class="btn btn-default btn-sm form-control" ng-click="Removephone($index)">
+                                    <span class="glyphicon glyphicon-minus"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <code>{{phonearr}}</code>
+                        
+                      
+
+                        <div class="row" ng-if="mailarr" ng-repeat="i in mailarr track by $index">
+                            <div class="col-sm-8 form-group">
+                                <label>Email Address</label>
+                              
+
+                                <input type="text" placeholder="Enter Email Address Here.." class="form-control" ng-pattern="/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/" ng-model="i.mail" name="email{{$index}}" required>
+                                <p class="text-danger" ng-show="registerform.email{{$index}}.$error.required">Email is required </p>
+                                <p class="text-danger" ng-show="registerform.email{{$index}}.$error.pattern">Email is invalid </p>
+                            </div>
+                            <div class="form-group col-sm-2" ng-if="$index==0">
+                                <label>Add email</label>
+                                <button type="button" class="btn btn-default btn-sm form-control" ng-click="Addmail()">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </button>
+                            </div>
+                            <div class="form-group col-sm-2" ng-if="$index!=0">
+                                <label>Remove</label>
+                                <button type="button" class="btn btn-default btn-sm form-control" ng-click="Removemail($index)">
+                                    <span class="glyphicon glyphicon-minus"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <code>{{mailarr}}</code>
+
+
+                        <div class="form-group">
+                            <label>Introduce yourself</label>
+                            <textarea placeholder="Enter Introduce yourself Here.." rows="3" class="form-control" ng-model="introduce" name="introduce" ng-maxlength="1000"></textarea>                           
+                        </div>
+                        <button type="button" class="btn btn-lg btn-info" ng-disabled="registerform.$invalid" ng-click="submit()">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" ng-show="!flag">
+        <h1 class="well">Result Form</h1>
+        <div class="col-lg-12 well">
+            <div class="row">
+                <form name="">
+                    <div class="col-sm-12">
+
+                        <div class="form-group">
+                            <label>Full Name</label>
+
+                            <input type="text"class="form-control" ng-model="fullname" disabled>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 form-group">
+                                <label>User Name</label>
+                                <input type="text"class="form-control" ng-model="username" name="username" disabled>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <label>Password</label>
+                                <input type="text" class="form-control" name="password" ng-model="password" disabled>
+                                
+                            </div>
+                 
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 form-group">
+                                <label>Sex</label>
+                                <input type="text" class="form-control" ng-model="sex" disabled>
+                            </div>
+                            <div class="col-sm-4 form-group">
+                                <label>Birthday</label>
+                                <input type="text" class="form-control" id="datetimepicker4" ng-model="birthday" disabled>
+                            </div>
+                            <div class="col-sm-4 form-group">
+                                <label>Job</label>
+                                <select class="form-control" ng-model="job" disabled>
+                                    <option value="Developer">Developer</option>
+                                    <option value="Tester">Tester</option>
+                                </select>
+                            </div>
+                        </div>
+                      
+                            <div class="form-group" ng-if="phonearr" ng-repeat="i in phonearr track by $index">
+                                <label>Phone Number</label>
+                                <input type="text"class="form-control" ng-model="i.phone" disabled>
+                            </div>
+                       
+                     
+                            <div class="form-group" ng-if="mailarr" ng-repeat="i in mailarr track by $index">
+                                <label>Email Address</label>
+
+
+                                <input type="text"class="form-control" ng-pattern="/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/" ng-model="i.mail" name="email" disabled>
+                               
+                            </div>                     
+                        <div class="form-group">
+                            <label>Introduce yourself</label>
+                            <textarea rows="3" class="form-control" ng-model="introduce" name="introduce" ng-maxlength="1000" disabled></textarea>
+                           
+                        </div>
+                        <button type="button" class="btn btn-lg btn-info" ng-click="flag = true">Edit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="content/angular.min.js"></script>
+    <script src="content/angular-route.min.js"></script>
+
+    <script src="content/ui-bootstrap-tpls-2.1.4.min.js"></script>
+
+    <script src="content/bootstrap-datetimepicker.min.js"></script>
+    <script src="content/jquery.datetimepicker.full.js"></script>
+    <script type="text/javascript">
+        $.datetimepicker.setLocale('vi');
+        $('#datetimepicker4')
+            .datetimepicker({
+                timepicker: false,
+                format: 'd/m/Y'
+            });
+
+    </script>
+    <script src="content/app.js"></script>
+
+</body>
+</html>
